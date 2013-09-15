@@ -1,4 +1,4 @@
-#zxhigfx Documentation
+#summary zxhigfx Documentation
 
 = Introduction =
 
