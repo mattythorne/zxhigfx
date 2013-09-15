@@ -1,0 +1,17 @@
+#zxhigfx Documentation
+
+= Introduction =
+
+C library providing assembly functions for plotting pixels to the ZX spectrum screen and attribute changing (paper, ink) plus some c functions untilising these for drawing primitives.
+
+For use with z88dk cross compiler for z80 based machines http://www.z88dk.org/forum/
+
+
+= Testing =
+
+Tested on:
+  * 48k Spectrum
+  * ZX Spectrum 128k
+  * ZX Spectrum +2
+  * ZX Spectrum +3
+Known compatibility issues on 16k Spectrum
