@@ -18,17 +18,23 @@ void main(void) {
 	y=10;
 	myattr = attr(WHITE, RED, TRUE, FALSE);
 	cls(myattr);
+
+        // Plot a horizontal line in pixels
 	for(x=10;x<80;x++) cplot(x,y,myattr);
 	
 	myattr = attr(CYAN, RED, TRUE, FALSE);
+        // Draw a diagonal line
 	cDrawLine(0,0,255,192,myattr);
 	
 	myattr = attr(MAGENTA, RED, TRUE, FALSE);
+        // Draw a filled rectangle at 30,30
 	cDrawFilledRect(30,30,130,80,myattr);
 	
 	myattr = attr(GREEN, RED, TRUE, FALSE);
+        // Draw a filled circle centre of screen
 	cDrawFilledCircle(125, 80, 50, myattr);
 	
+        // set the border to green
 	cBorder(GREEN);
 	
 	while(1){};
