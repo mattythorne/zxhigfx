@@ -5,14 +5,15 @@
  *	
  *  \section intro_sec Introduction
  *	C library providing assembly functions for plotting pixels to the ZX spectrum screen 
- *	and attribute changing (paper, ink) plus some c functions untilising these
+ *	and attribute changing (paper, ink) plus some c functions utilising these
  *	for drawing primitives.
  *	
  *	For use with z88dk cross compiler for z80 based machines
  *		http://www.z88dk.org/forum/
  *		
  *	\section testing_sec Testing
- *	Tested on ZX Spectrum 48k and Spectrum +3
+ *	Tested on 48k ZX Spectrum, ZX Spectrum 128k, ZX Spectrum +2, Spectrum +3
+ *	known compatibility issue with 16k ZX Spectrum
  *	
  *  \section license_sec License
  *  Copyright 2013 Matthew Thorne
