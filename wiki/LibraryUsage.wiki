@@ -32,7 +32,7 @@ void main(void) {
 	
 	myattr = attr(GREEN, RED, TRUE, FALSE);
         // Draw a filled circle centre of screen
-	cDrawFilledCircle(125, 80, 50, myattr);
+	cDrawFilledCircle(127, 96, 50, myattr);
 	
         // set the border to green
 	cBorder(GREEN);
