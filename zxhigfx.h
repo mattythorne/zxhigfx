@@ -1,31 +1,124 @@
+/**
+ *  \mainpage
+ *	High Resolution 256x192 Colour Graphics Library for ZX Spectrum
+ *	---------------------------------------------------------------
+ *	
+ *  \section intro_sec Introduction
+ *	C library providing assembly functions for plotting pixels to the ZX spectrum screen 
+ *	and attribute changing (paper, ink) plus some c functions untilising these
+ *	for drawing primitives.
+ *	
+ *	For use with z88dk cross compiler for z80 based machines
+ *		http://www.z88dk.org/forum/
+ *		
+ *	\section testing_sec Testing
+ *	Tested on ZX Spectrum 48k and Spectrum +3
+ *	
+ *  \section license_sec License
+ *  Copyright 2013 Matthew Thorne
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
+//TODO : Add screen page swapping and sprite handling functionality
 
 #ifndef __ZXHIGFX_H__
 #define __ZXHIGFX_H__
 
 #include <stdlib.h>
 
+/**
+ *	Standard spectrum colour black
+ */
 #define BLACK 		0
+/**
+ *	Standard spectrum colour blue
+ */
 #define BLUE		1
+/**
+ *	Standard spectrum colour red
+ */
 #define RED			2
+/**
+ *	Standard spectrum colour magenta
+ */
 #define MAGENTA		3
+/**
+ *	Standard spectrum colour green
+ */
 #define GREEN		4
+/**
+ *	Standard spectrum colour cyan
+ */
 #define CYAN		5
+/**
+ *	Standard spectrum colour yellow
+ */
 #define YELLOW		6
+/**
+ *	Standard spectrum colour white
+ */
 #define WHITE		7
 
+
+/**
+ *	Spectrum horizontal screen boundary
+ */
 #define XMAX 		255
+/**
+ *	Spectrum vertical screen boundary
+ */
 #define YMAX		191
 
 
-
+/** 
+ *	Helper function - return the attribute value based on the specified
+ *	ink and paper colours
+ *	@param ink an integer representing the ink colour (0 - 7)
+ *	@param paper an integer representing the paper colour (0 - 7)
+ *	@param bright an integer specifying wether bright is used (0, 1)
+ *  @param flash an integer specifying wether flash is used (0, 1)
+ *  @return an integer representing the attribute value
+ */
 int attr(int ink, int paper, int bright, int flash){
 	// Construct the attribute byte 
 	return ink + (8 * paper) + (bright * 64) + (flash * 128);
 }
 
-void cplot(int x, int y, int attr){
+/**
+ *	Set the spectrum border colour
+ *	@param color an integer representing the border colour (0 - 7)
+ */  
+void cBorder(int color){
+	#asm
+		LD		ix,0
+		ADD		ix,sp
+		LD		A,(ix+2)
+		
+		CALL	8859
+		RET
+	#endasm
+}
 
+/**
+ *	plot a pixel to the screen
+ *	@param x an integer specifying the horizontal position of the pixel
+ *	@param y an integer specifying the vertical position of the pixel
+ *  @param attr an integer specifying the attribute value of the pixel
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
+void cplot(int x, int y, int attr){
 
 //Bounds checking
 if (x>XMAX) x=XMAX;
@@ -129,7 +222,11 @@ if (attr>255) attr=255;
 
 } 
 
-// Clear screen to a particular attribute
+/**
+ *	Clear screen to specified attribute
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cls(int attr){
 
 	// Assembly Screen Attribute Clearing Routine
@@ -154,7 +251,9 @@ void cls(int attr){
 	#endasm
 }
 
-// Clear displayfile - removes text from screen
+/**
+ *	Clear the spectrum displayfile
+ */
 void clsdf(void){
 
 	// Assembly Display File Clearing Routine
@@ -173,6 +272,15 @@ void clsdf(void){
 	#endasm
 }
 
+/**
+ *  Draw a rectangle primitive - origin topleft
+ *	@param startx an integer specifying the horizontal origin
+ *	@param starty an integer specifying the vertical origin
+ *	@param endx an integer specifying the horizontal end point
+ *	@param endy an integer specifying the vertical end point
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cDrawRect(int startx, int starty, int endx, int endy, int attr) {
 	int x, y;
 	
@@ -193,6 +301,15 @@ void cDrawRect(int startx, int starty, int endx, int endy, int attr) {
 	}
 }
 
+/**
+ *	Draw a line primitive 
+ *	@param startx an integer specifying the horizontal origin
+ *	@param starty an integer specifying the vertical origin
+ *	@param endx an integer specifying the horizontal end point
+ *	@param endy an integer specifying the vertical end point
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cDrawLine(int startx, int starty, int endx, int endy, int attr) {
 // http://cboard.cprogramming.com/game-programming/67832-line-drawing-algorithm.html
 
@@ -238,7 +355,15 @@ void cDrawLine(int startx, int starty, int endx, int endy, int attr) {
         }
     }
 }
-	
+
+/**
+ *	Draw a circle primitive - origin centre
+ *	@param x0 an integer specifying the horizontal origin
+ *	@param y0 an integer specifying the vertical origin
+ *	@param radius an integer specifying the radius of the circle
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cDrawCircle(int x0, int y0, int radius, int attr){
 		int x, y, radiusError;
 		
@@ -267,11 +392,28 @@ void cDrawCircle(int x0, int y0, int radius, int attr){
 		}
 }
 
+/**
+ *	Draw a filled circle primitive - origin centre
+ *	@param x0 an integer specifying the horizontal origin
+ *	@param y0 an integer specifying the vertical origin
+ *	@param radius an integer specifying the radius of the circle
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cDrawFilledCircle(int x0, int y0, int radius, int attr){
 	int n;
 	for(n=radius; n>0; n--) cDrawCircle(x0, y0, n, attr); 
 }
 
+/**
+ *  Draw a filled rectangle primitive - origin topleft
+ *	@param startx an integer specifying the horizontal origin
+ *	@param starty an integer specifying the vertical origin
+ *	@param endx an integer specifying the horizontal end point
+ *	@param endy an integer specifying the vertical end point
+ *	@param attr an integer specifying the attribute value
+ *  @see attr(int ink, int paper, int bright, int flash)
+ */
 void cDrawFilledRect(int startx, int starty, int endx, int endy, int attr) {
 	int x, y;
 	for(y=starty; y<=endy; y++){
@@ -280,6 +422,7 @@ void cDrawFilledRect(int startx, int starty, int endx, int endy, int attr) {
 		}
 	}	
 }
+
 
 
 #endif
